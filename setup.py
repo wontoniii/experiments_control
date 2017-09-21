@@ -7,4 +7,5 @@ setup(name='experiments_control',
       author='Francesco Bronzino',
       author_email='wontoniii@gmail.com',
       license='MIT',
+      packages=['experiments_control'],
       zip_safe=False)
