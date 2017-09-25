@@ -18,8 +18,9 @@ class IPerferer:
     self.bandwidth = 0
     self.host = None
     self.dstHost = None
+    self.version = None
 
-  def config(self, dstHost=None, totaltime=0, UDP=False, bandwidth=1, host=None):
+  def config(self, dstHost=None, totaltime=0, UDP=False, bandwidth=1, host=None, version='3'):
     """
 
     :param latency:
@@ -38,6 +39,7 @@ class IPerferer:
     self.totaltime = totaltime
     self.UDP = UDP
     self.bandwidth = bandwidth
+    self.version = version
 
   def processOutput(self):
     """
@@ -51,7 +53,7 @@ class IPerferer:
     Run pinger waiting for it to complete before returning control
     :return:
     """
-    cmd = "iperf3"
+    cmd = "iperf"+self.version
     if self.UDP:
       cmd += " -u -b " + str(self.bandwidth)
     if self.totaltime > 0:
