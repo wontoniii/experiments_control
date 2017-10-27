@@ -7,6 +7,7 @@ import argparse
 import re
 
 class IPerferer:
+  V_COMMANDS = {"2": "iperf", "3": "iperf3"}
 
   def __int__(self):
     """
@@ -19,7 +20,6 @@ class IPerferer:
     self.host = None
     self.dstHost = None
     self.version = "2"
-    self.V_COMMANDS = {"2": "iperf", "3": "iperf3"}
     self.configured = False
 
   def config(self, dstHost=None, totaltime=0, UDP=False, bandwidth=1, host=None, version='2'):
@@ -41,7 +41,7 @@ class IPerferer:
     self.totaltime = totaltime
     self.UDP = UDP
     self.bandwidth = bandwidth
-    if version not in self.V_COMMANDS.keys():
+    if version not in IPerferer.V_COMMANDS.keys():
       raise ValueError("Incorrect version option")
     self.version = version
     self.configured = True
@@ -58,7 +58,7 @@ class IPerferer:
 
     :return:
     """
-    cmd = self.V_COMMANDS[self.version]
+    cmd = IPerferer.V_COMMANDS[self.version]
     if self.UDP:
       cmd += " -u -b " + str(self.bandwidth)
     if self.totaltime > 0:

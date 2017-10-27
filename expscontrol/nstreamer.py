@@ -1,5 +1,6 @@
 '''
 by: wontoniii
+    wontoniii@gmail.com
 
 Driver class by: Arash Molavi Kakhki
     Northeastern University
@@ -75,13 +76,13 @@ class Driver():
 class Streamer():
   PLATFORM_VARS = {
     "mac": {
-
+      "driverpath": "chromeDrivers\win\chromedriver.exe"
     },
     "win": {
-
+      "driverpath": "chromeDrivers\win\chromedriver.exe"
     },
     "linux": {
-
+      "driverpath": "chromeDrivers\win\chromedriver.exe"
     }
   }
 
@@ -91,12 +92,13 @@ class Streamer():
     """
     self.lenght = 600
     self.URL = 'https://www.netflix.com/watch/70165197'
+    self.driverPath = ""
     self.driver = None
     self.login = False
-    self.profile = '/Users/fbronzin/Google Drive/Universita/Inria/Research/TrafficP/Experiments/ta/controlled/customProfile'
+    self.profile = ''
     self.platform = get_platform()
 
-  def config(self, length=None, URL=None, login=None, profile=None, platform='mac'):
+  def config(self, length=10, URL=None, login=False, profile=None, platform=get_platform(), driverPath=None):
     """
     Confgures the streamer
     :param length: Duration in seconds of the stream
@@ -116,6 +118,10 @@ class Streamer():
       self.profile = profile
     if platform is not None:
       self.platform = platform
+    if driverPath is not None:
+      self.driverPath = driverPath
+    else:
+      self.driverPath = Streamer.PLATFORM_VARS[self.platform]["driverpath"]
 
   def doLogIn(self, app, username=None, password=None):
     if app.lower() == 'netflix':
@@ -193,9 +199,7 @@ class Streamer():
     if self.driver is not None:
       raise AttributeError("The driver already running")
     self.driver = Driver()
-    # chromeDriverPath = os.path.abspath('chromeDrivers/{}/chromedriver_2.27'.format(self.platform))
-    chromeDriverPath = os.path.abspath('chromeDrivers\win\chromedriver.exe')
-    #self.driver.fireUp(chromeDriverPath, userDir=self.profile)
+    chromeDriverPath = os.path.abspath(self.driverPath)
     self.driver.fireUp(chromeDriverPath)
     if self.login:
       self.doLogIn()
@@ -214,8 +218,8 @@ class Streamer():
     if self.driver is not None:
       raise AttributeError("The driver already running")
     self.driver = Driver()
-    chromeDriverPath = os.path.abspath('chromeDrivers/{}/chromedriver_2.27'.format(self.platform))
-    self.driver.fireUp(chromeDriverPath, userDir=self.profile)
+    chromeDriverPath = os.path.abspath(self.driverPath)
+    self.driver.fireUp(chromeDriverPath)
     if self.login:
       self.doLogIn()
     self.driver.get(self.URL)
