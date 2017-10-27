@@ -18,9 +18,11 @@ class IPerferer:
     self.bandwidth = 0
     self.host = None
     self.dstHost = None
-    self.version = None
+    self.version = "2"
+    self.V_COMMANDS = {"2": "iperf", "3": "iperf3"}
+    self.configured = False
 
-  def config(self, dstHost=None, totaltime=0, UDP=False, bandwidth=1, host=None, version='3'):
+  def config(self, dstHost=None, totaltime=0, UDP=False, bandwidth=1, host=None, version='2'):
     """
 
     :param latency:
@@ -39,7 +41,10 @@ class IPerferer:
     self.totaltime = totaltime
     self.UDP = UDP
     self.bandwidth = bandwidth
+    if version not in self.V_COMMANDS.keys():
+      raise ValueError("Incorrect version option")
     self.version = version
+    self.configured = True
 
   def processOutput(self):
     """
@@ -48,18 +53,25 @@ class IPerferer:
     :return:
     """
 
-  def runSync(self):
+  def prepareCommand(self):
     """
-    Run pinger waiting for it to complete before returning control
+
     :return:
     """
-    cmd = "iperf"+self.version
+    cmd = self.V_COMMANDS[self.version]
     if self.UDP:
       cmd += " -u -b " + str(self.bandwidth)
     if self.totaltime > 0:
       cmd += " -t " + str(self.totaltime)
     cmd += " -c " + self.dstHost
     self.command.setCmd(cmd)
+
+  def runSync(self):
+    """
+    Run pinger waiting for it to complete before returning control
+    :return:
+    """
+    self.prepareCommand()
     if self.command.runSync() == 0:
       self.rawOutput = self.command.getStdout()
       self.processOutput()
@@ -75,13 +87,7 @@ class IPerferer:
     :param callback:
     :return:
     """
-    cmd = "iperf3"
-    if self.UDP:
-      cmd += " -u -b " + str(self.bandwidth)
-    if self.totaltime > 0:
-      cmd += " -t " + str(self.totaltime)
-    cmd += " -c " + self.dstHost
-    self.command.setCmd(cmd)
+    self.prepareCommand()
     if self.command.runAsync() < 0:
       self.rawOutput = self.command.getStdout()
       self.processOutput()
