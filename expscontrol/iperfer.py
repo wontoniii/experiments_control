@@ -34,8 +34,7 @@ class IPerferer:
       self.command = Command()
     else:
       self.command = RemoteCommand()
-      self.host = RemoteNode()
-      self.host.setHost(host)
+      self.host = host
       self.command.setRemoteNode(host)
     self.dstHost = dstHost
     self.totaltime = totaltime

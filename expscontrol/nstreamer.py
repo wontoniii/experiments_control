@@ -6,6 +6,10 @@ Driver class by: Arash Molavi Kakhki
     Northeastern University
     arash.molavi@gmail.com
     ALL RIGHTS RESERVED
+
+Description:
+
+Notes: It is not possible to run it remotely as it requires a desktop environment for Chrome to run
 '''
 
 import selenium

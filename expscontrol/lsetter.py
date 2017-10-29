@@ -2,9 +2,14 @@
 Definition
 '''
 
-from cmd_exec import Command, RemoteCommand, RemoteNode
+from cmd_exec import Command, RemoteCommand
 import argparse
 import re
+
+
+#ssh root@node19-20 "tc qdisc del dev eth0.1002 root; \
+#                       tc qdisc add dev eth0.1002 root netem delay ${lat}ms"
+#ssh root@node20-19 "tc qdisc add dev wlan0 root netem loss 6% 25%"
 
 class LatencySetter:
   def __int__(self):
@@ -13,10 +18,13 @@ class LatencySetter:
     :return:
     """
     self.latency = None
-    self.loss = None
+    self.lossavg = None
+    self.losssd = None
+    self.interface = None
     self.host = None
+    self.sudo = False
 
-  def config(self, latency=0, loss=0, host=None):
+  def config(self, interface="eth0", latency=0, lossavg=0, losssd=0, host=None, sudo=True):
     """
 
     :param latency:
@@ -28,11 +36,14 @@ class LatencySetter:
       self.command = Command()
     else:
       self.command = RemoteCommand()
-      self.host = RemoteNode()
+      self.host = host
       self.host.setHost(host)
       self.command.setRemoteNode(host)
+    self.interface = interface
     self.latency = latency
-    self.loss = loss
+    self.lossavg = lossavg
+    self.losssd = losssd
+    self.sudo = sudo
 
   def processOutput(self):
     """
@@ -41,17 +52,46 @@ class LatencySetter:
     :return:
     """
 
-  def setLatency(self):
+  def createQDisc(self):
     """
 
     :return:
     """
+    cmd = ""
+    if self.sudo:
+      cmd += "sudo"
+    cmd += " tc qdisc add dev " + self.interface + " root netem"
+    if self.latency > 0:
+      cmd += " delay " + str(self.latency) + "ms"
+    if self.lossavg > 0:
+      cmd += " loss {:d}%".format(self.lossavg)
+      if self.losssd > 0:
+        cmd += " {:d}%".format(self.losssd)
+    if self.command.runSync() == 0:
+      self.rawOutput = self.command.getStdout()
+      self.processOutput()
+      return 0
+    else:
+      self.rawOutput = self.command.getStdout()
+      return -1
 
-  def cancelLatency(self):
+
+  def deleteQDisc(self):
     """
 
     :return:
     """
+    cmd = ""
+    if self.sudo:
+      cmd += "sudo"
+    cmd += " tc qdisc del dev " + self.interface + " root"
+    if self.command.runSync() == 0:
+      self.rawOutput = self.command.getStdout()
+      self.processOutput()
+      return 0
+    else:
+      self.rawOutput = self.command.getStdout()
+      return -1
 
   def printRawOutput(self):
     """
