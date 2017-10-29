@@ -57,6 +57,10 @@ class LatencySetter:
 
     :return:
     """
+    if (self.losssd is None or self.losssd <= 0) and \
+      (self.lossavg is None or self.lossavg <= 0) and \
+      (self.latency is None or self.latency <= 0):
+      raise ValueError("Wrong values, set at least one value to >0")
     cmd = ""
     if self.sudo:
       cmd += "sudo"
