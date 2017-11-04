@@ -16,6 +16,7 @@ import selenium
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from utils import *
+import argparse
 
 
 class Driver():
@@ -99,7 +100,7 @@ class Streamer():
     self.driverPath = ""
     self.driver = None
     self.login = False
-    self.profile = ''
+    self.profile = None
     self.platform = get_platform()
 
   def config(self, length=10, URL=None, login=False, profile=None, platform=get_platform(), driverPath=None):
@@ -204,7 +205,7 @@ class Streamer():
       raise AttributeError("The driver already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile)
     if self.login:
       self.doLogIn()
     self.driver.get(self.URL)
@@ -223,7 +224,7 @@ class Streamer():
       raise AttributeError("The driver already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile)
     if self.login:
       self.doLogIn()
     self.driver.get(self.URL)
@@ -238,10 +239,40 @@ class Streamer():
     time.sleep(2)
     self.driver.quit()
 
+  def openWindown(self):
+    """
+
+    :return:
+    """
+    if self.driver is not None:
+      raise AttributeError("The driver already running")
+    self.driver = Driver()
+    chromeDriverPath = os.path.abspath(self.driverPath)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile)
+    time.sleep(self.lenght)
 
 def main():
+  """
+  Run a single stream
+  :return:
+  """
+  #def config(self, length=10, URL=None, login=False, profile=None, platform=get_platform(), driverPath=None):
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-p', '--page', type=str, required=True, help="Page to stream")
+  parser.add_argument('-P', '--profile', type=str, required=False, help="Custom profile folder", default="")
+  parser.add_argument('-d', '--driver', type=str, required=False, help="Path to drivers' folder", default=None)
+  parser.add_argument('-l', '--length', type=int, required=False, help="Length of the stream", default=10)
+  parser.add_argument('-L', '--login', action='store_true', help="Whether a login is required")
+  parser.add_argument('-o', '--open', action='store_true', help="Starts a chromium session without doing anything")
+  args = vars(parser.parse_args())
+
   streamer = Streamer()
-  streamer.runSync()
+  streamer.config(length=args["length"], profile=args["profile"], URL=args["page"], login=args["login"],
+                driverPath=args["driver"])
+  if args["open"]:
+    streamer.openWindown()
+  else:
+    streamer.runSync()
 
 if __name__ == "__main__":
   main()
