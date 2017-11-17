@@ -18,18 +18,23 @@ class LatencySetter:
     :return:
     """
     self.latency = None
+    self.capacity = None
     self.lossavg = None
     self.losssd = None
     self.interface = None
     self.host = None
     self.sudo = False
 
-  def config(self, interface="eth0", latency=0, lossavg=0, losssd=0, host=None, sudo=True):
+  def config(self, interface="eth0", latency=0, lossavg=0, losssd=0, host=None, sudo=True, capacity=0):
     """
 
-    :param latency:
-    :param loss:
-    :param host:
+    :param interface: name of interface to apply the policy to
+    :param latency: latency to apply in ms
+    :param lossavg:
+    :param losssd:
+    :param host: RemoteHost object
+    :param sudo: if it has to be run as sudo
+    :param capacity: max capacity in kbps
     :return:
     """
     if host is None:
@@ -40,6 +45,7 @@ class LatencySetter:
       self.host.setHost(host)
       self.command.setRemoteNode(host)
     self.interface = interface
+    self.capacity = capacity
     self.latency = latency
     self.lossavg = lossavg
     self.losssd = losssd
@@ -67,6 +73,8 @@ class LatencySetter:
     cmd += " tc qdisc add dev " + self.interface + " root netem"
     if self.latency > 0:
       cmd += " delay " + str(self.latency) + "ms"
+    if self.capacity > 0:
+      cmd += " rate " + str(self.capacity) + "kbit"
     if self.lossavg > 0:
       cmd += " loss {:d}%".format(self.lossavg)
       if self.losssd > 0:
