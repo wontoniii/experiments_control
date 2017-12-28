@@ -24,7 +24,7 @@ class Driver():
     self.driver = None
 
   def fireUp(self, chromeDriverPath, extensionPath=None, userDir=None, dataDir=None, useSocksProxy=False,
-             userData=None, disableComponentUpdate=False):
+             userData=None, disableComponentUpdate=False, enableQUIC=False):
     userData=True
     args = []
     chromeOptions = webdriver.ChromeOptions()
@@ -53,6 +53,9 @@ class Driver():
 
     if extensionPath:
       args += ['--load-extension={}'.format(extensionPath)]
+
+    if enableQUIC:
+      args += ['--enable-quic']
 
     for arg in args:
       chromeOptions.add_argument(arg)
@@ -205,7 +208,7 @@ class Streamer():
       raise AttributeError("The driver already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath, userDir=self.profile)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=True)
     if self.login:
       self.doLogIn()
     self.driver.get(self.URL)
@@ -224,7 +227,7 @@ class Streamer():
       raise AttributeError("The driver already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath, userDir=self.profile)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=True)
     if self.login:
       self.doLogIn()
     self.driver.get(self.URL)
@@ -248,7 +251,7 @@ class Streamer():
       raise AttributeError("The driver is already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath, userDir=self.profile)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=True)
     time.sleep(self.lenght)
     self.driver.quit()
 
