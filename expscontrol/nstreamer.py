@@ -106,7 +106,7 @@ class Streamer():
     self.profile = None
     self.platform = get_platform()
 
-  def config(self, length=10, URL=None, login=False, profile=None, platform=get_platform(), driverPath=None):
+  def config(self, length=10, URL=None, login=False, profile=None, platform=get_platform(), driverPath=None, enableQUIC=True):
     """
     Confgures the streamer
     :param length: Duration in seconds of the stream
@@ -130,6 +130,7 @@ class Streamer():
       self.driverPath = driverPath
     else:
       self.driverPath = Streamer.PLATFORM_VARS[self.platform]["driverpath"]
+    self.enableQUIC = enableQUIC
 
   def doLogIn(self, app, username=None, password=None):
     if app.lower() == 'netflix':
@@ -208,7 +209,7 @@ class Streamer():
       raise AttributeError("The driver already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=True)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=self.enableQUIC)
     if self.login:
       self.doLogIn()
     self.driver.get(self.URL)
@@ -227,7 +228,7 @@ class Streamer():
       raise AttributeError("The driver already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=True)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=self.enableQUIC)
     if self.login:
       self.doLogIn()
     self.driver.get(self.URL)
@@ -251,7 +252,7 @@ class Streamer():
       raise AttributeError("The driver is already running")
     self.driver = Driver()
     chromeDriverPath = os.path.abspath(self.driverPath)
-    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=True)
+    self.driver.fireUp(chromeDriverPath, userDir=self.profile, enableQUIC=self.enableQUIC)
     time.sleep(self.lenght)
     self.driver.quit()
 
