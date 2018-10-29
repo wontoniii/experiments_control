@@ -11,7 +11,6 @@ from pinger import Pinger
 
 class MPPinger(Pinger):
 
-
   def __int__(self):
     """
 
@@ -38,6 +37,9 @@ class MPPinger(Pinger):
     :return:
     """
     Pinger.config(self, dst=None, src=None, count=100, interval=1, interface=None)
+    self.dstHost = dst
+    self.count = count
+    self.interval = interval * 1000
     self.train = train
     self.trainS = trainS
     self.trainI = trainI
@@ -67,9 +69,10 @@ class MPPinger(Pinger):
     Run pinger waiting for it to complete before returning control
     :return:
     """
-    #mpping requires
-    cmd = "sudo mpping "
-    cmd += self.dstHost
+    # mpping requires
+    cmd = "sudo ./Delays_Timestamp "
+    # cmd = "sudo ./mpping "
+
     if self.interval > 0:
       cmd += " -i " + str(self.interval)
     if self.count > 0:
@@ -89,6 +92,9 @@ class MPPinger(Pinger):
         if i > 0:
           cmd += ","
         cmd += str(value)
+
+    cmd += " " + self.dstHost
+    print "Command to be ran: "+str(cmd)
     self.command.setCmd(cmd)
     if self.command.runSync() == 0:
       self.rawOutput = self.command.getStdout()
@@ -107,8 +113,10 @@ class MPPinger(Pinger):
     :return:
     """
     # mpping requires
-    cmd = "sudo mpping "
-    cmd += self.dstHost
+    cmd = "sudo Delays_Timestamp "
+    # cmd = "sudo ./mpping "
+
+
     if self.interval > 0:
       cmd += " -i " + str(self.interval)
     if self.count > 0:
@@ -128,6 +136,8 @@ class MPPinger(Pinger):
         if i > 0:
           cmd += ","
         cmd += str(value)
+
+    cmd += " " + self.dstHost
     self.command.setCmd(cmd)
     self.command.runAsync()
 
@@ -149,7 +159,7 @@ def main():
   parser.add_argument('-s', '--src', type=str, required=False, help="Source for the pings", default=None)
   parser.add_argument('-c', '--count', type=int, required=False, help="Number of pings", default=10)
   parser.add_argument('-i', '--interval', type=float, required=False, help="Period of pings", default=1)
-  parser.add_argument('-s', '--source', type=str, required=False, help="IP address to be used", default=None)
+  parser.add_argument('-S', '--source', type=str, required=False, help="IP address to be used", default=None)
   parser.add_argument('-T', '--train', action='store_true', help="Active train of consecutive pings")
   parser.add_argument('-t', '--trainS', type=int, required=False, help="Number of pings in a train", default=0)
   parser.add_argument('-I', '--trainI', type=int, required=False, help="Interval in between pings in a train", default=0)

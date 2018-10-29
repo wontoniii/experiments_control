@@ -142,6 +142,7 @@ class Pinger:
 
     :return:
     """
+
     print self.rawOutput
 
   def printRawToFilew(self, outfolder, outfile):
@@ -169,6 +170,7 @@ def main():
                                                                            "Makes the other arguments irrelevant",
                       default=None)
   args = vars(parser.parse_args())
+
 
   if args["file_name"] is not None:
     pinger = Pinger()
