@@ -5,7 +5,6 @@ Definition
 from cmd_exec import Command, RemoteCommand, RemoteNode
 import argparse
 import re
-import sys
 import time
 import json
 import pingparser
@@ -179,9 +178,9 @@ class Pinger:
 
     json_data = json.dumps(data_dict)
 
-    print json_data
+    # print json_data
 
-    return
+    return json_data
 
   def printRawOutput(self):
     """
