@@ -6,6 +6,8 @@ from cmd_exec import Command, RemoteCommand, RemoteNode
 import argparse
 import re
 import sys
+import time
+import json
 import pingparser
 
 class Pinger:
@@ -31,6 +33,8 @@ class Pinger:
     self.min = None
     self.max = None
     self.avg = None
+    self.st = None
+    self.et = None
 
   def config(self, dst=None, src=None, count=100, interval=1, interface=None):
     """
@@ -89,7 +93,10 @@ class Pinger:
       cmd += " -c " + str(self.count)
     if self.interface is not None:
       cmd += " -I " + self.interface
+
+    self.st = int(round(time.time() * 1000))
     self.command.setCmd(cmd)
+    self.et = int(round(time.time() * 1000))
     if self.command.runSync() == 0:
       self.rawOutput = self.command.getStdout()
       self.processOutput()
@@ -133,9 +140,48 @@ class Pinger:
     :return:
     """
     #print the results
+    print "Results obtained from the ping"
     print(str(self.tot)+" packets transmitted, "+str(self.rec)+" packets received, "+\
       str(self.loss)+" packet loss")
     print("round-trip min/avg/max/stddev = "+str(self.min)+"/"+str(self.avg)+"/"+str(self.max)+"/"+str(self.std)+" ms")
+
+    print "Array with RTTs:"
+    print self.rtts
+
+  def createJSON(self):
+
+
+    pings_data = \
+      [
+        {
+          "Meta": "Ping",
+          "DestHost": self.dstHost,
+          "Device": "",
+          "RTTs": self.rtts
+        }
+      ]
+
+
+    data_dict = \
+      {
+        "Info": {
+          "Version": "1.6",
+          "Conf": "LargeString_with_MAC_Address_Here",
+          "Type": "AccessPing",
+          "TsStart": self.st,
+          "TsEnd": self.st
+        },
+        "TrafficData": None,
+        "CapturedData": None,
+        "TRouteData": None,
+        "PingsData": pings_data
+      }
+
+    json_data = json.dumps(data_dict)
+
+    print json_data
+
+    return
 
   def printRawOutput(self):
     """
@@ -164,7 +210,7 @@ def main():
   parser.add_argument('-d', '--dest', type=str, required=False, help="Destination for the pings")
   parser.add_argument('-s', '--src', type=str, required=False, help="Source for the pings", default=None)
   parser.add_argument('-c', '--count', type=int, required=False, help="Number of pings", default=10)
-  parser.add_argument('-i', '--interval', type=float, required=False, help="Period of pings", default=1)
+  parser.add_argument('-i', '--interval', type=float, required=False, help="Interval of pings", default=1)
   parser.add_argument('-I', '--interface', type=str, required=False, help="Interface to be used", default=None)
   parser.add_argument('-f', '--file-name', type=str, required=False, help="Files to process the ping output from. "
                                                                            "Makes the other arguments irrelevant",
@@ -190,8 +236,9 @@ def main():
       print "error running ping"
       pinger.printRawOutput()
       return
-    pinger.printRawOutput()
+    # pinger.printRawOutput()
     pinger.printResults()
+    pinger.createJSON()
   else:
     print "You need to provide a destination or a file!"
     parser.print_help()

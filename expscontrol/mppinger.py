@@ -6,6 +6,7 @@ from cmd_exec import Command, RemoteCommand, RemoteNode
 import argparse
 import re
 import sys
+import subprocess
 import pingparser
 from pinger import Pinger
 
@@ -95,15 +96,23 @@ class MPPinger(Pinger):
 
     cmd += " " + self.dstHost
     print "Command to be ran: "+str(cmd)
-    self.command.setCmd(cmd)
+    # self.command.setCmd(cmd)
+
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE,stderr=subprocess.PIPE, shell=False)
+
+    return_code = process.returncode
+
+    self.rawOutput, error = process.communicate()
+
+
     if self.command.runSync() == 0:
       self.rawOutput = self.command.getStdout()
       self.processOutput()
-      return 0
+      return return_code
     else:
       self.rawOutput = self.command.getStdout()
       self.processOutput()
-      return -1
+      return return_code
 
   def runAsync(self, callback=None):
     """
