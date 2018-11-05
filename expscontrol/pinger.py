@@ -93,8 +93,12 @@ class Pinger:
     if self.interface is not None:
       cmd += " -I " + self.interface
 
+    # Get the timestamp at which the ping starts
     self.st = int(round(time.time() * 1000))
+
     self.command.setCmd(cmd)
+
+    # Get the timestamp at which the ping ends
     self.et = int(round(time.time() * 1000))
     if self.command.runSync() == 0:
       self.rawOutput = self.command.getStdout()
