@@ -20,6 +20,8 @@ And the installation of the selenium library:
 
 ``pip install selenium``
 
+Further, the pinger module uses `https://github.com/ssteinerx/pingparser` for parsing.
+
 NOTE: Windows supports expects cygwin to be installed (i.e. ssh to be a valid command line tool)
 
 
