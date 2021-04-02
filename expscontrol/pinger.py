@@ -6,7 +6,7 @@ from expscontrol.cmd_exec import Command, RemoteCommand, RemoteNode
 import argparse
 import re
 import sys
-from expscontrol import pingparser
+import pingparser
 
 class Pinger:
 
