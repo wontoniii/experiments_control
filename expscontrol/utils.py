@@ -1,4 +1,4 @@
-import sys, os, ConfigParser, math, json, time, subprocess, commands, random, string, logging, logging.handlers, socket, StringIO
+import sys, os
 
 def curlDownload(url, outfile='/dev/null'):
   cmd = ['curl', '-k', '\"{}\"'.format(url), '>', outfile]
