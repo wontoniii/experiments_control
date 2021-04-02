@@ -2,12 +2,12 @@
 Definition
 '''
 
-from cmd_exec import Command, RemoteCommand, RemoteNode
+from expscontrol.cmd_exec import Command, RemoteCommand, RemoteNode
 import argparse
 import re
 import sys
 import pingparser
-from pinger import Pinger
+from expscontrol.pinger import Pinger
 
 class MPPinger(Pinger):
 
@@ -176,13 +176,13 @@ def main():
                   interface=args["source"], train=args["train"], trainS=args["trainS"],
                   trainI=args["trainI"], gamma=args["gamma"], pattern=args["pattern"])
     if pinger.runSync() < 0:
-      print "error running ping"
+      print ("error running ping")
       pinger.printRawOutput()
       return
     pinger.printRawOutput()
     pinger.printResults()
   else:
-    print "You need to provide a destination or a file!"
+    print ("You need to provide a destination or a file!")
     parser.print_help()
 
 if __name__ == "__main__":

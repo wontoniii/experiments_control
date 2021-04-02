@@ -15,7 +15,7 @@ Notes: It is not possible to run it remotely as it requires a desktop environmen
 import selenium
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from utils import *
+from expscontrol.utils import *
 import argparse
 
 
@@ -139,7 +139,7 @@ class Streamer():
       p = self.driver.getMultiprocess(loginURL)
 
       if self.driver.driver.current_url == loginURL.replace('Login', 'browse'):
-        print '\tWas already logged in!'
+        print('\tWas already logged in!')
         return True
 
       if username and password:
@@ -154,9 +154,9 @@ class Streamer():
         return True
 
       else:
-        print '\n\nYou are not logged in!'
-        print 'user the following switches to enter your credentials for login: (your credentials will ONLY be submitted to Netflix)'
-        print '--username=[your username] --password=[your password]'
+        print ('\n\nYou are not logged in!')
+        print ('user the following switches to enter your credentials for login: (your credentials will ONLY be submitted to Netflix)')
+        print ('--username=[your username] --password=[your password]')
         return False
 
   def moveMouse(self):

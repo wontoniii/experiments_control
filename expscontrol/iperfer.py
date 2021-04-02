@@ -2,7 +2,7 @@
 Definition
 '''
 
-from cmd_exec import Command, RemoteCommand, RemoteNode
+from expscontrol.cmd_exec import Command, RemoteCommand, RemoteNode
 import argparse
 import re
 
@@ -136,7 +136,7 @@ class IPerferer:
 
     :return:
     """
-    print self.rawOutput
+    print(self.rawOutput)
 
 # def main():
 #   """

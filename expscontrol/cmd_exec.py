@@ -68,7 +68,6 @@ class Command:
     # args = self.cmd.split()
     args = shlex.split(self.cmd)
     # args = self.cmd
-    print args
     try:
       self.running = True
       self.stdout = subprocess.check_output(args)
@@ -91,7 +90,6 @@ class Command:
     # args = self.cmd.split()
     args = shlex.split(self.cmd)
     # args = self.cmd
-    print args
     try:
       self.async = True
       self.popen = Popen(args, stdout=subprocess.PIPE)

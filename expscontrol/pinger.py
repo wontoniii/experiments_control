@@ -2,11 +2,11 @@
 Definition
 '''
 
-from cmd_exec import Command, RemoteCommand, RemoteNode
+from expscontrol.cmd_exec import Command, RemoteCommand, RemoteNode
 import argparse
 import re
 import sys
-import pingparser
+from expscontrol import pingparser
 
 class Pinger:
 
@@ -142,7 +142,7 @@ class Pinger:
 
     :return:
     """
-    print self.rawOutput
+    print(self.rawOutput)
 
   def printRawToFilew(self, outfolder, outfile):
     """
@@ -185,13 +185,13 @@ def main():
     pinger.config(dst=args["dest"], src=src, count=args["count"], interval=args["interval"],
                   interface=args["interface"])
     if pinger.runSync() < 0:
-      print "error running ping"
+      print("error running ping")
       pinger.printRawOutput()
       return
     pinger.printRawOutput()
     pinger.printResults()
   else:
-    print "You need to provide a destination or a file!"
+    print("You need to provide a destination or a file!")
     parser.print_help()
 
 if __name__ == "__main__":

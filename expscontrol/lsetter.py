@@ -2,7 +2,7 @@
 Definition
 '''
 
-from cmd_exec import Command, RemoteCommand
+from expscontrol.cmd_exec import Command, RemoteCommand
 import argparse
 import re
 
@@ -110,4 +110,4 @@ class LatencySetter:
 
     :return:
     """
-    print self.rawOutput
+    print(self.rawOutput)
