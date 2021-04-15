@@ -33,7 +33,7 @@ class Command:
     self.stderr = None
     self.running = False
     self.popen = None
-    self.async = False
+    self.asn = False
 
   def setCmd(self, cmd):
     """
@@ -91,7 +91,7 @@ class Command:
     args = shlex.split(self.cmd)
     # args = self.cmd
     try:
-      self.async = True
+      self.asc = True
       self.popen = Popen(args, stdout=subprocess.PIPE)
       self.running = True
       return 0
@@ -109,7 +109,7 @@ class Command:
 
     :return:
     """
-    if self.async is False:
+    if self.asc is False:
       raise BaseException("Checking a non async process")
     if self.running is False:
       return True
@@ -128,7 +128,7 @@ class Command:
 
     :return:
     """
-    if self.async is False:
+    if self.asc is False:
       raise BaseException("Checking a non async process")
     if self.running is False:
       return False
