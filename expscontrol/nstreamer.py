@@ -17,6 +17,7 @@ from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from expscontrol.utils import *
 import argparse
+import time
 
 
 class Driver():
